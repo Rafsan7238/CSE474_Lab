@@ -154,8 +154,7 @@ match (not time), create a new object by merging their details. The location sho
 Merge the lists of injuries/casualties and update their numbers accordingly. Finally, delete the objects
 event1 and event2, and return the new object.
 
-The rest attributes are left alone to be implemented by user as no specific information on how to merge
-them was provided in the problem.
+The rest attributes are merged into lists.
 '''
 def _merge(event1, event2):
 
@@ -168,22 +167,24 @@ def _merge(event1, event2):
             event3 = Disaster(event1.date_time, event1.location)
 
         elif type(event1) == '__main__.Earthquake':
-            event3 = Earthquake(event1.date_time, event1.location)
+            event3 = Earthquake(event1.date_time, event1.location, [event1.source, event2.source], [event1.seismic_scale, event2.seismic_scale])
 
         elif type(event1) == '__main__.Flood':
-            event3 = Flood(event1.date_time, event1.location)
+            event3 = Flood(event1.date_time, event1.location, [event1.water_level, event2.water_level])
 
         elif type(event1) == '__main__.Cyclone':
-            event3 = Cyclone(event1.date_time, event1.location)
+            event3 = Cyclone(event1.date_time, event1.location, [event1.source, event2.source], [event1.water_level, event2.water_level])
 
         elif type(event1) == '__main__.Drought':
-            event3 = Drought(event1.date_time, event1.location)
+            event3 = Drought(event1.date_time, event1.location, event1.list_of_affected_crops + event2.list_of_affected_crops)
 
         # update the list and numbers of injuries and casualties by adding them
         event3.casualties = event1.casualties + event2.casualties
         event3.injuries = event1.injuries + event2.injuries
         event3.list_of_injuries = event1.list_of_injuries + event2.list_of_injuries
         event3.list_of_casualties = event1.list_of_casualties + event2.list_of_casualties
+        event3.financial_loss = event1.financial_loss + event2.financial_loss
+        event3.impact_factor = math.log(event3.injuries + 1) + math.sqrt(event3.casualties) + (1.12 ** (event3.financial_loss / 100))
 
         # delete the old events and return the new event
         del event1
